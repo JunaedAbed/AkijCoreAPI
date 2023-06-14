@@ -23,9 +23,10 @@ namespace AkijCoreAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
         {
-            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage));  
-
-            if (!ModelState.IsValid) return BadRequest(new ErrorResponse(errorMessages));
+            if (!ModelState.IsValid)
+            {
+                return BadRequestModelState();
+            }
 
             if (registerRequest.Password != registerRequest.ConfirmPassword) return BadRequest(new ErrorResponse("Password does not match confirm password"));
 
@@ -45,6 +46,30 @@ namespace AkijCoreAPI.Controllers
             await userRespository.CreateUser(registerUser);
 
             return Ok(registerUser);
+        }        
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequestModelState();
+            }
+
+            User user = await userRespository.GetByUsername(loginRequest.Username!);
+            if (user == null) return Unauthorized();
+
+            bool isCorrectPassword = passwordHasher.VerifyPassword(loginRequest.Password!, user.Password!);
+            if (!isCorrectPassword)
+            {
+                return Unauthorized();
+            }
+        }
+
+        private IActionResult BadRequestModelState()
+        {
+            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage));
+            return BadRequest(new ErrorResponse(errorMessages));
         }
     }
 }
