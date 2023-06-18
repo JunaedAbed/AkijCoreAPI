@@ -1,14 +1,36 @@
 using AkijCoreAPI.DataContext;
+using AkijCoreAPI.Models;
 using AkijCoreAPI.Services.PasswordHashers;
+using AkijCoreAPI.Services.TokenGenerators;
 using AkijCoreAPI.Services.UserRepositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var authenticationConfiguration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build().GetSection("Authentication").Get<AuthenticationConfiguration>();
+builder.Services.AddScoped(_ => authenticationConfiguration);
 
 builder.Services.AddControllers();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
+{
+    o.TokenValidationParameters = new TokenValidationParameters()
+    {
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationConfiguration.AccessTokenSecret)),
+        ValidIssuer = authenticationConfiguration.Issuer,
+        ValidAudience = authenticationConfiguration.Audience,
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = true,
+        ValidateAudience = true
+    };
+});    
+
+builder.Services.AddScoped<AccessTokenGenerator>();
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 builder.Services.AddScoped<IUserRespository, UserRepository>();
 
@@ -20,7 +42,6 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("AuthenticationSe
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -28,6 +49,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -86,3 +86,6 @@ D:\Code Projects\AkijCoreAPI\AkijCoreAPI\obj\Debug\net6.0\refint\AkijCoreAPI.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\obj\Debug\net6.0\AkijCoreAPI.pdb
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\obj\Debug\net6.0\AkijCoreAPI.genruntimeconfig.cache
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\obj\Debug\net6.0\ref\AkijCoreAPI.dll
+D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Binder.dll
+D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\libman.json
+D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

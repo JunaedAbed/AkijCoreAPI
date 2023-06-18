@@ -2,7 +2,9 @@
 using AkijCoreAPI.Models.Requests;
 using AkijCoreAPI.Models.Responses;
 using AkijCoreAPI.Services.PasswordHashers;
+using AkijCoreAPI.Services.TokenGenerators;
 using AkijCoreAPI.Services.UserRepositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AkijCoreAPI.Controllers
@@ -13,11 +15,13 @@ namespace AkijCoreAPI.Controllers
     {
         private readonly IUserRespository userRespository;
         private readonly IPasswordHasher passwordHasher;
+        private readonly AccessTokenGenerator accessTokenGenerator;
 
-        public AuthenticationController(IUserRespository userRespository, IPasswordHasher passwordHasher)
+        public AuthenticationController(IUserRespository userRespository, IPasswordHasher passwordHasher, AccessTokenGenerator accessTokenGenerator)
         {
             this.userRespository = userRespository;
             this.passwordHasher = passwordHasher;
+            this.accessTokenGenerator = accessTokenGenerator;
         }
 
         [HttpPost("register")]
@@ -64,6 +68,13 @@ namespace AkijCoreAPI.Controllers
             {
                 return Unauthorized();
             }
+
+            string accessToken = accessTokenGenerator.GenerateToken(user);
+
+            return Ok(new AuthenticatedUserResponse()
+            {
+                AccessToken = accessToken,
+            });
         }
 
         private IActionResult BadRequestModelState()
