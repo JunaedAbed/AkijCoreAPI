@@ -1,8 +1,11 @@
 ﻿using AkijCoreAPI.Models;
 using AkijCoreAPI.Models.Requests;
 using AkijCoreAPI.Models.Responses;
+using AkijCoreAPI.Services.Authenticators;
 using AkijCoreAPI.Services.PasswordHashers;
+using AkijCoreAPI.Services.RefreshTokenRepositories;
 using AkijCoreAPI.Services.TokenGenerators;
+using AkijCoreAPI.Services.TokenValidators;
 using AkijCoreAPI.Services.UserRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +18,17 @@ namespace AkijCoreAPI.Controllers
     {
         private readonly IUserRespository userRespository;
         private readonly IPasswordHasher passwordHasher;
-        private readonly AccessTokenGenerator accessTokenGenerator;
+        private readonly Authenticator authenticator;
+        private readonly RefreshTokenValidator refreshTokenValidator;
+        private readonly IRefreshTokenRepository refreshTokenRepository;
 
-        public AuthenticationController(IUserRespository userRespository, IPasswordHasher passwordHasher, AccessTokenGenerator accessTokenGenerator)
+        public AuthenticationController(IUserRespository userRespository, IPasswordHasher passwordHasher, AccessTokenGenerator accessTokenGenerator, RefreshTokenGenerator refreshTokenGenerator, RefreshTokenValidator refreshTokenValidator, IRefreshTokenRepository refreshTokenRepository, Authenticator authenticator)
         {
             this.userRespository = userRespository;
             this.passwordHasher = passwordHasher;
-            this.accessTokenGenerator = accessTokenGenerator;
+            this.refreshTokenValidator = refreshTokenValidator;
+            this.refreshTokenRepository = refreshTokenRepository;
+            this.authenticator = authenticator;
         }
 
         [HttpPost("register")]
@@ -50,7 +57,7 @@ namespace AkijCoreAPI.Controllers
             await userRespository.CreateUser(registerUser);
 
             return Ok(registerUser);
-        }        
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
@@ -60,21 +67,51 @@ namespace AkijCoreAPI.Controllers
                 return BadRequestModelState();
             }
 
-            User user = await userRespository.GetByUsername(loginRequest.Username!);
+            User user = await userRespository.GetByUsername(loginRequest.Username);
             if (user == null) return Unauthorized();
 
-            bool isCorrectPassword = passwordHasher.VerifyPassword(loginRequest.Password!, user.Password!);
+            bool isCorrectPassword = passwordHasher.VerifyPassword(loginRequest.Password, user.Password);
             if (!isCorrectPassword)
             {
                 return Unauthorized();
             }
 
-            string accessToken = accessTokenGenerator.GenerateToken(user);
+            AuthenticatedUserResponse response = await authenticator.Authenticate(user);
 
-            return Ok(new AuthenticatedUserResponse()
+            return Ok(response);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshRequest refreshRequest)
+        {
+            if (!ModelState.IsValid)
             {
-                AccessToken = accessToken,
-            });
+                return BadRequestModelState();
+            }
+
+            bool isValidRefreshToken = refreshTokenValidator.Validate(refreshRequest.RefreshToken);
+            if (!isValidRefreshToken)
+            {
+                return BadRequest(new ErrorResponse("Invalid refresh token"));
+            }
+
+            RefreshToken refreshTokenDTO = await refreshTokenRepository.GetByToken(refreshRequest.RefreshToken);
+            if (refreshTokenDTO == null)
+            {
+                return NotFound(new ErrorResponse("Invalid refresh token"));
+            }
+
+            await refreshTokenRepository.Delete(refreshTokenDTO.Id);
+
+            User user = await userRespository.GetById(refreshTokenDTO.Uid);
+            if (user == null)
+            {
+                return NotFound(new ErrorResponse("User not found"));
+            }
+
+            AuthenticatedUserResponse response = await authenticator.Authenticate(user);
+
+            return Ok(response);
         }
 
         private IActionResult BadRequestModelState()

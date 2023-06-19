@@ -4,6 +4,7 @@ using AkijCoreAPI.Services.UserRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AkijCoreAPI.Controllers
 {
@@ -14,7 +15,7 @@ namespace AkijCoreAPI.Controllers
     {
         private readonly IUserRespository userRespository;
 
-        public UserController(IUserRespository userRespository)
+        public UserController(IUserRespository userRespository) 
         {
             this.userRespository = userRespository;
         }
@@ -22,6 +23,10 @@ namespace AkijCoreAPI.Controllers
         [HttpGet("userAuthorization")]
         public IActionResult UserAuthorization()
         {
+            string id = HttpContext.User.FindFirstValue("id");
+            string email = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            string username = HttpContext.User.FindFirstValue(ClaimTypes.Name);
+
             return Ok("Authorized");
         }
     }

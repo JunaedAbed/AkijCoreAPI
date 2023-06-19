@@ -1,5 +1,6 @@
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\appsettings.Development.json
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\appsettings.json
+D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\libman.json
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\AkijCoreAPI.exe
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\AkijCoreAPI.deps.json
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\AkijCoreAPI.runtimeconfig.json
@@ -9,6 +10,7 @@ D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Azure.Core.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Azure.Identity.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\BCrypt.Net-Next.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Humanizer.dll
+D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Data.SqlClient.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
@@ -19,6 +21,7 @@ D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.EntityFramew
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.Caching.Abstractions.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Binder.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.DependencyModel.dll
@@ -86,6 +89,3 @@ D:\Code Projects\AkijCoreAPI\AkijCoreAPI\obj\Debug\net6.0\refint\AkijCoreAPI.dll
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\obj\Debug\net6.0\AkijCoreAPI.pdb
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\obj\Debug\net6.0\AkijCoreAPI.genruntimeconfig.cache
 D:\Code Projects\AkijCoreAPI\AkijCoreAPI\obj\Debug\net6.0\ref\AkijCoreAPI.dll
-D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Binder.dll
-D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\libman.json
-D:\Code Projects\AkijCoreAPI\AkijCoreAPI\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

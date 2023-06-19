@@ -28,9 +28,9 @@ namespace AkijCoreAPI.Services.UserRepositories
             
         }
 
-        public async Task<User> GetById(string id)
+        public async Task<User> GetById(int id)
         {
-            return await dbContext.Users.FindAsync(id);
+            return await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User> GetByUsername(string username)

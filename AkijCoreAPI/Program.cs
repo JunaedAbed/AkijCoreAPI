@@ -1,7 +1,10 @@
 using AkijCoreAPI.DataContext;
 using AkijCoreAPI.Models;
+using AkijCoreAPI.Services.Authenticators;
 using AkijCoreAPI.Services.PasswordHashers;
+using AkijCoreAPI.Services.RefreshTokenRepositories;
 using AkijCoreAPI.Services.TokenGenerators;
+using AkijCoreAPI.Services.TokenValidators;
 using AkijCoreAPI.Services.UserRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -26,13 +29,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudience = authenticationConfiguration.Audience,
         ValidateIssuerSigningKey = true,
         ValidateIssuer = true,
-        ValidateAudience = true
+        ValidateAudience = true,
+        ClockSkew = TimeSpan.Zero
     };
 });    
 
 builder.Services.AddScoped<AccessTokenGenerator>();
+builder.Services.AddScoped<RefreshTokenGenerator>();
+builder.Services.AddScoped<RefreshTokenValidator>();
+builder.Services.AddScoped<Authenticator>();
+builder.Services.AddScoped<TokenGenerator>();
 builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
 builder.Services.AddScoped<IUserRespository, UserRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
