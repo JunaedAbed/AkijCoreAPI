@@ -34,5 +34,15 @@ namespace AkijCoreAPI.Services.RefreshTokenRepositories
                 await aPIDbContext.SaveChangesAsync();
             }
         }
+
+        public async Task DeleteAll(int id)
+        {
+            IEnumerable<RefreshToken> refreshTokens = await aPIDbContext.RefreshTokens
+               .Where(t => t.Uid == id)
+               .ToListAsync();
+
+            aPIDbContext.RefreshTokens.RemoveRange(refreshTokens);
+            await aPIDbContext.SaveChangesAsync();
+        }
     }
 }

@@ -9,6 +9,7 @@ using AkijCoreAPI.Services.TokenValidators;
 using AkijCoreAPI.Services.UserRepositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AkijCoreAPI.Controllers
 {
@@ -16,11 +17,19 @@ namespace AkijCoreAPI.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        #region private
         private readonly IUserRespository userRespository;
         private readonly IPasswordHasher passwordHasher;
         private readonly Authenticator authenticator;
         private readonly RefreshTokenValidator refreshTokenValidator;
         private readonly IRefreshTokenRepository refreshTokenRepository;
+
+        private IActionResult BadRequestModelState()
+        {
+            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage));
+            return BadRequest(new ErrorResponse(errorMessages));
+        }
+        #endregion
 
         public AuthenticationController(IUserRespository userRespository, IPasswordHasher passwordHasher, AccessTokenGenerator accessTokenGenerator, RefreshTokenGenerator refreshTokenGenerator, RefreshTokenValidator refreshTokenValidator, IRefreshTokenRepository refreshTokenRepository, Authenticator authenticator)
         {
@@ -114,10 +123,20 @@ namespace AkijCoreAPI.Controllers
             return Ok(response);
         }
 
-        private IActionResult BadRequestModelState()
+        [Authorize]
+        [HttpDelete("logout")]
+        public async Task<IActionResult> Logout()
         {
-            IEnumerable<string> errorMessages = ModelState.Values.SelectMany(x => x.Errors.Select(e => e.ErrorMessage));
-            return BadRequest(new ErrorResponse(errorMessages));
+            string userId = HttpContext.User.FindFirstValue("id");
+
+            if(!int.TryParse(userId, out int uid))
+            {
+                return Unauthorized();
+            }
+
+            await refreshTokenRepository.DeleteAll(int.Parse(userId));
+
+            return NoContent();
         }
     }
 }
